@@ -1,9 +1,16 @@
 import entity.Gender;
 import entity.Person;
+import util.DisplayGender;
+import util.DisplayPersonName;
+import util.EmailValidator;
+import util.Validator;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -13,9 +20,10 @@ public class Implementation {
     public static void main(String[] args) {
 
         List<Person> person = Arrays.asList(
-                new Person("Pedro Becker", "pedro@domain.com", Gender.MALE),
-                new Person("Otavio Becker", "otavio@domain.com", Gender.MALE),
-                new Person("Laudiceia Becker", "laudiceia@domain.com", Gender.FEMALE)
+                new Person("Peter", "peter@domain.com", Gender.MALE),
+                new Person("Ana", "ana@domain.com", Gender.FEMALE),
+                new Person("Amanda", "amanda@foo.com", Gender.FEMALE),
+                new Person("Sunshine", "sunshine@domain.com", Gender.QUEER)
         );
 
 
@@ -40,6 +48,17 @@ public class Implementation {
         personSupplier.get()
                 .findFirst()
                 .ifPresent(System.out::println);
+
+
+        // Usage of a concrete class that implements the Consumer<T> interface
+        personSupplier.get()
+                .forEach(new DisplayPersonName());
+
+
+        // Anonymous implementation of the Consumer<T> interface
+        Consumer<Person> displayPersonEmail = (p) -> System.out.format("Email: %s\n", p.getEmail());
+        personSupplier.get()
+                .forEach(displayPersonEmail);
 
 
         // Count the number of male
@@ -67,6 +86,36 @@ public class Implementation {
                         )
                 )
                 .forEach((gender, total) -> System.out.format("Gender: %s (%d)\n", gender, total));
+
+
+        // Group persons by gender, counts them, then return a new Map Object
+        Map<Gender, Long> genders = personSupplier.get()
+                .collect(
+                        Collectors.groupingBy(
+                                Person::getGender,
+                                Collectors.counting()
+                        )
+                );
+
+
+        // Usage a concrete class that implements the BiConsumer<K, V> interface
+        genders.forEach(new DisplayGender());
+
+
+        // Anonymous implementation of the BiConsumer<K, V> interface
+        BiConsumer<Gender, Long> displayGender = (gender, total) -> System.out.format("Gender: %s (%d)\n", gender, total);
+        genders.forEach(displayGender);
+
+
+        // Usage of a concrete class that implements the Validator<T> and Consumer<T> interface
+        personSupplier.get()
+                .forEach(new EmailValidator());
+
+
+        // Anonymous implementation of the Validator<T> interface
+        Validator<String> emailValidator = (e) -> e.matches("[a-z]+@foo.com");
+        personSupplier.get()
+                .forEach(p -> System.out.println(emailValidator.validate(p.getEmail())));
 
     }
 }

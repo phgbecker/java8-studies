@@ -4,4 +4,7 @@
     - Stream
     - Method reference
     - Lambda
+    - Functional Interfaces
+
+    To-Do:
     - LocalDate/LocalTime/LocalDateTime
