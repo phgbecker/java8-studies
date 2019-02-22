@@ -10,6 +10,15 @@ public class Person {
     private String email;
     private Gender gender;
 
+    public Person(String name) {
+        this.name = name;
+    }
+
+    public Person(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
+
     public Person(String name, String email, Gender gender) {
         this.name = name;
         this.email = email;

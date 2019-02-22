@@ -1,17 +1,12 @@
 import entity.Gender;
 import entity.Person;
-import util.DisplayGender;
-import util.DisplayPersonName;
-import util.EmailValidator;
-import util.Validator;
+import util.*;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -117,5 +112,32 @@ public class Implementation {
         personSupplier.get()
                 .forEach(p -> System.out.println(emailValidator.validate(p.getEmail())));
 
+
+        // Builds a person object with the Function<T, R> interface
+        Function<String, Person> personNameConstructor = Person::new;
+        Person p1 = personNameConstructor.apply("Francis");
+        System.out.println(p1);
+
+
+        // Builds a person object with the BiFunction<T, U, R> interface
+        BiFunction<String, String, Person> personNameEmailConstructor = Person::new;
+        Person p2 = personNameEmailConstructor.apply("Davis", "davis@domain.com");
+        System.out.println(p2);
+
+
+        // Builds a person object with the TriFunction<T, U, V, R> interface
+        TriFunction<String, String, Gender, Person> personNameEmailGenderConstructor = Person::new;
+        Person p3 = personNameEmailGenderConstructor.apply("Samantha", "samantha@domain.com", Gender.FEMALE);
+        System.out.println(p3);
+
+
+        // Returns a list of the first 10 emails from the person list
+        List<String> personEmails = personSupplier.get()
+                .map(Person::getEmail)
+                .limit(5)
+                .collect(Collectors.toList());
+
+
     }
+
 }
